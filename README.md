@@ -1,7 +1,14 @@
 # MCITrack
 * # [AAAI'2025] - Exploring Enhanced Contextual Information for Video-Level Object Tracking
-> [**Exploring Enhanced Contextual Information for Video-Level Object Tracking**]()<br>
+> [**Exploring Enhanced Contextual Information for Video-Level Object Tracking**](https://arxiv.org/pdf/2412.11023v1)<br>
 [Ben Kang](https://scholar.google.com.hk/citations?user=By9F6bwAAAAJ), [Xin Chen](https://scholar.google.com.hk/citations?user=A04HWTIAAAAJ), [Simiao Lai](https://scholar.google.com/citations?user=_It52jkAAAAJ&hl=zh-CN&oi=ao), [Yang Liu](https://faculty.dlut.edu.cn/liuyang1/zh_CN/index.htm), [Yi Liu](https://www.owenliu.net/), [Dong Wang](http://faculty.dlut.edu.cn/wangdongice/zh_CN/index.htm)
+
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/exploring-enhanced-contextual-information-for-1/visual-object-tracking-on-lasot)](https://paperswithcode.com/sota/visual-object-tracking-on-lasot?p=exploring-enhanced-contextual-information-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/exploring-enhanced-contextual-information-for-1/visual-object-tracking-on-tnl2k)](https://paperswithcode.com/sota/visual-object-tracking-on-tnl2k?p=exploring-enhanced-contextual-information-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/exploring-enhanced-contextual-information-for-1/visual-object-tracking-on-trackingnet)](https://paperswithcode.com/sota/visual-object-tracking-on-trackingnet?p=exploring-enhanced-contextual-information-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/exploring-enhanced-contextual-information-for-1/semi-supervised-video-object-segmentation-on-15)](https://paperswithcode.com/sota/semi-supervised-video-object-segmentation-on-15?p=exploring-enhanced-contextual-information-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/exploring-enhanced-contextual-information-for-1/visual-object-tracking-on-got-10k)](https://paperswithcode.com/sota/visual-object-tracking-on-got-10k?p=exploring-enhanced-contextual-information-for-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/exploring-enhanced-contextual-information-for-1/visual-object-tracking-on-lasot-ext)](https://paperswithcode.com/sota/visual-object-tracking-on-lasot-ext?p=exploring-enhanced-contextual-information-for-1)
 
 [[Models](https://drive.google.com/drive/folders/1x6hTaBpF8dO_G8TsBn9z-or7FtKBF1mb?usp=sharing)] , [[raw_results](https://drive.google.com/file/d/1zgCks9KNd0iVFrKtOvXrcxTKM4CfEok7/view?usp=sharing)], [[training_logs](https://drive.google.com/file/d/178JHRHi1JaNg-0yGehkcSBgzwpufMGSJ/view?usp=sharing)]
 
