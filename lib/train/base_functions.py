@@ -296,6 +296,9 @@ def get_optimizer_scheduler(net, cfg):
         lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer,
                                                             milestones=cfg.TRAIN.SCHEDULER.MILESTONES,
                                                             gamma=cfg.TRAIN.SCHEDULER.GAMMA)
+    elif cfg.TRAIN.SCHEDULER.TYPE == "cosine":
+        lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg.TRAIN.SCHEDULER.T_MAX,
+                                                                 eta_min=cfg.TRAIN.SCHEDULER.ETA_MIN)
     else:
         raise ValueError("Unsupported scheduler")
     return optimizer, lr_scheduler
