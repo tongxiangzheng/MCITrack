@@ -79,8 +79,8 @@ def ltr_collate_stack1(batch):
             # If we're in a background process, concatenate directly into a
             # shared memory tensor to avoid an extra copy
             numel = sum([x.numel() for x in batch])
-            storage = batch[0].storage()._new_shared(numel)
-            out = batch[0].new(storage)
+            out = torch.empty(0, dtype=batch[0].dtype, device=batch[0].device)
+            out.resize_(numel)  # Resize to the required number of elements
             # len(batch)
             # 16
             # batch[0].shape

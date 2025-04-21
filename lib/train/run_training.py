@@ -96,7 +96,7 @@ def main():
 
     args = parser.parse_args()
     if local_rank != -1:
-        print(local_rank)
+        #print(local_rank)
         dist.init_process_group(backend='nccl')
         torch.cuda.set_device(int(local_rank))
     else:

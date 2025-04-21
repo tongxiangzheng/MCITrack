@@ -3,8 +3,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from functools import partial
-from timm.models.layers import DropPath
+from timm.layers import DropPath
 import torch.utils.checkpoint as checkpoint
+from torch.amp import autocast
+
 class DWConv(nn.Module):
     def __init__(self, dim=768):
         super().__init__()
@@ -141,10 +143,12 @@ class Mamba_Neck(nn.Module):
 
         #  y : (B, L, D)
         #  caches : [cache(layer) for all layers], cache : (h, inputs)
-        for i,index in enumerate(interaction_indexes):
-            xs, h[i] = self.layers[i](xs, h[i])
-            x,xs = self.interactions[i](x,xs,blocks[index[0]:index[1]])
+        # 在 forward 方法中添加混合精度支持
 
+        with autocast('cuda'):  # 使用混合精度
+            for i, index in enumerate(interaction_indexes):
+                xs, h[i] = self.layers[i](xs, h[i])
+                x, xs = self.interactions[i](x, xs, blocks[index[0]:index[1]])
         return x, xs, h
 
 
@@ -212,13 +216,16 @@ class MambaBlock(nn.Module):
         #  todo : explain why removed
 
         # S4D real initialization
-        A = torch.arange(1, self.d_state + 1, dtype=torch.float32).repeat(self.d_inner, 1)
-        self.A_log = nn.Parameter(
-            torch.log(A))  # why store A in log ? to keep A < 0 (cf -torch.exp(...)) ? for gradient stability ?
-        self.D = nn.Parameter(torch.ones(self.d_inner))
-
+        negativeA = -torch.arange(1, self.d_state + 1, dtype=torch.float32).repeat(self.d_inner, 1)
+        D = nn.Parameter(torch.ones(self.d_inner)).float()
+        
+        self.register_buffer('negativeA', negativeA)  # 缓存 negativeA
+        self.register_buffer('D', D)  # 缓存 D
+        
+        
         #  projects block output from ED back to D
         self.out_proj = nn.Linear(self.d_inner, self.d_model, bias=bias)
+        self.silu = nn.SiLU()
     def forward(self, x, h):
         #  x : (B,L, D)
         # h : (B,L, ED, N)
@@ -233,12 +240,12 @@ class MambaBlock(nn.Module):
         #  x branch
         x = self.conv1d( x_cache).permute(0,2,1) #  (B,L , ED)
 
-        x = F.silu(x)
+        x = self.silu(x)
         y, h = self.ssm_step(x, h)
         #y->B,L,ED;h->B,L,ED,N
 
         #  z branch
-        z = F.silu(z)
+        z = self.silu(z)
 
         output = y * z
         output = self.out_proj(output)  #  (B, L, D)
@@ -249,10 +256,9 @@ class MambaBlock(nn.Module):
         #  x : (B, L, ED)
         #  h : (B, L, ED, N)
 
-        A = -torch.exp(
-            self.A_log.float())  # (ED, N) # todo : ne pas le faire tout le temps, puisque c'est indépendant de la timestep
-        D = self.D.float()
-        #  TODO remove .float()
+        A = self.negativeA  # (ED, N)
+        D = self.D
+        
 
         deltaBC = self.x_proj(x)  #  (B, L, dt_rank+2*N)
 
