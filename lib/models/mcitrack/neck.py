@@ -41,14 +41,14 @@ class ConvFFN(nn.Module):
         return x
 
 class Extractor(nn.Module):
-    def __init__(self, d_model, num_heads=8, dropout=0.1,drop_path=0.1,
+    def __init__(self, d_model, num_heads=6, dropout=0.1,drop_path=0.1,
                  norm_layer=partial(nn.LayerNorm, eps=1e-6)):
         super().__init__()
         self.query_norm = norm_layer(d_model)
         self.feat_norm = norm_layer(d_model)
         self.attn = nn.MultiheadAttention(d_model, num_heads, dropout=dropout)
         #convffn
-        self.ffn = ConvFFN(in_features=d_model, hidden_features=int(d_model * 0.25), drop=0.)
+        self.ffn = ConvFFN(in_features=d_model, hidden_features=int(d_model * 0.2), drop=0.)
         self.ffn_norm = norm_layer(d_model)
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
 
@@ -97,13 +97,13 @@ class InteractionBlock(nn.Module):
         if extra_extractor:
             self.extra_extractors = nn.Sequential(*[
                 Extractor(d_model=d_model)
-                for _ in range(2)])
+                for _ in range(1)])
         else:
             self.extra_extractors = None
 
     def forward(self,x,xs,blocks):
         x = self.injector(x.permute(1,0,2),xs.permute(1,0,2)).permute(1,0,2)
-        for idx,blk in enumerate(blocks):
+        for blk in blocks:
             x = checkpoint.checkpoint(blk, x, None,use_reentrant=False) if self.grad_ckpt else blk(x,None)
         xs = checkpoint.checkpoint(self.extractor, xs.permute(1,0,2),x.permute(1,0,2),use_reentrant=False).permute(1,0,2) \
             if self.grad_ckpt else self.extractor(xs.permute(1, 0, 2), x.permute(1, 0, 2)).permute(1, 0, 2)  # b,n,c
