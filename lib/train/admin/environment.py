@@ -44,7 +44,9 @@ def create_default_local_file():
 
 def create_default_local_file_ITP_train(workspace_dir, data_dir):
     path = os.path.join(os.path.dirname(__file__), 'local.py')
-
+    workspace_dir = workspace_dir.replace('\\', '/')
+    data_dir = data_dir.replace('\\', '/')
+    
     empty_str = '\'\''
     default_settings = OrderedDict({
         'workspace_dir': workspace_dir,
@@ -91,11 +93,13 @@ def create_default_local_file_ITP_train(workspace_dir, data_dir):
             if attr in comment:
                 comment_str = comment[attr]
             if comment_str is None:
+                attr_val=attr_val.replace('\\', '/')
                 if attr_val == empty_str:
                     f.write('        self.{} = {}\n'.format(attr, attr_val))
                 else:
                     f.write('        self.{} = \'{}\'\n'.format(attr, attr_val))
             else:
+                comment_str=comment_str.replace('\\', '/')
                 f.write('        self.{} = \'{}\'    # {}\n'.format(attr, attr_val, comment_str))
 
 

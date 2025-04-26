@@ -102,9 +102,11 @@ def create_default_local_file_ITP_test(workspace_dir, data_dir, save_dir):
                 comment_str = comment[attr]
             attr_val = getattr(settings, attr)
             if not attr.startswith('__') and not callable(attr_val):
+                attr_val=attr_val.replace('\\', '/')
                 if comment_str is None:
                     f.write('    settings.{} = \'{}\'\n'.format(attr, attr_val))
                 else:
+                    comment_str=comment_str.replace('\\', '/')
                     f.write('    settings.{} = \'{}\'    # {}\n'.format(attr, attr_val, comment_str))
         f.write('\n    return settings\n\n')
 
